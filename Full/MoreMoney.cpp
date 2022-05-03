@@ -1,6 +1,7 @@
 #include "StateList.h"
 #include <vector>
 #include <string>
+#include <iostream>
 using namespace std;
 
 template<class A>
@@ -56,6 +57,21 @@ StateList<List<int>, tuple<int, int, int>> solve()
     }); }); }); }); }); }); }); }); });
 }
 
+namespace std {
+template<typename T, typename U>
+ostream& operator<<(ostream& os, const pair<T,U> & p)
+{
+    os << "(" << p.first << ", " << p.second << ")";
+    return os;
+}
+    template<class T>
+    ostream& operator<<(ostream& os, const tuple<T,T,T> & t)
+{
+    os << "(" << get<0>(t) << ", " << get<1>(t) << ", " << get<2>(t) << ")";
+    return os;
+}
+}
+
 void testMonad()
 {
     List<int>    lst1{ 1, 2, 3,};
@@ -69,10 +85,28 @@ void testMonad()
     cout << pairs << endl;
 }
 
+StateList<List<int>, pair<int, int>> mk_pairs() {
+    StateList<List<int>, int> sel = &select<int>;
+
+    return mbind(sel, [=](int i) {
+        return mbind(sel, [=](int j) {
+            return mreturn<List<int>>(
+                    make_pair(i, j));
+        }); 
+    });
+}
+
 int main()
 {
     testMonad();
-    List<int> lst{ 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
-    cout << evalStateList(solve(), lst);
+    List<int> test{ 4, 3, 2, 1 };
+    auto out = fmap([](int v) { return v*2;}, test );
+    cout << out << endl;
+    cout << select(List<int>{1, 2}) << endl;
+    cout << select(List<int>{1, 2, 3}) << endl;
+    cout << runStateList(mk_pairs(), List<int>{1, 2, 3}) << endl;
+    // List<int> lst{ 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
+    // cout << evalStateList(solve(), lst));
+    // cout << endl;
     return 0;
 }

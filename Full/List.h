@@ -67,6 +67,17 @@ private:
     std::shared_ptr<const Item> _head;
 };
 
+template<class T>
+std::ostream& operator<<(std::ostream& os, List<T> const & lst)
+{
+    os << "[";
+    forEach(lst, [&os](T v) {
+        os << v << " ";
+    });
+    os << "]";
+    return os;
+}
+
 template<class T, class F>
 auto fmap(F f, List<T> lst) -> List<decltype(f(lst.front()))>
 {
@@ -109,8 +120,9 @@ auto for_each(List<A> lst, F k) -> decltype(k(lst.front()))
     static_assert(std::is_convertible<
         F, std::function<List<B>(A) >> ::value,
         "for_each requires a function type List<B>(A)");
-
+    std::cout << "for_each: lst = " << lst << std::endl;
     List<List<B>> lstLst = fmap(k, lst);
+    std::cout << "for_each: lstLst = " << lstLst << std::endl;
     return concatAll(lstLst);
 }
 
@@ -132,17 +144,6 @@ void forEach(List<T> lst, F f)
         f(lst.front());
         lst = lst.popped_front();
     }
-}
-
-template<class T>
-std::ostream& operator<<(std::ostream& os, List<T> const & lst)
-{
-    os << "[";
-    forEach(lst, [&os](T v) {
-        os << v << " ";
-    });
-    os << "]";
-    return os;
 }
 
 #endif

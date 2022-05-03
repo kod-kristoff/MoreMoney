@@ -96,14 +96,14 @@ StateList<State, void*> guard(bool b)
         return mzero<State, void*>();
 }
 
-template<class S, class A>
-std::ostream& operator<<(std::ostream& os, pair<A, S> const & p)
-{
-    os << "(";
-    os << p.first << ", " << p.second;
-    os << ")";
-    return os;
-}
+// template<class S, class A>
+// std::ostream& operator<<(std::ostream& os, pair<A, S> const & p)
+// {
+//     os << "(";
+//     os << p.first << ", " << p.second;
+//     os << ")";
+//     return os;
+// }
 
 template<class A, class B, class C>
 std::ostream& operator<<(std::ostream& os, tuple<A, B, C> const & t)
